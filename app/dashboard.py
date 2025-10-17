@@ -153,6 +153,10 @@ else:
             
     else:
         st.error("Failed to process the selected file. Please check the file format and try again.")
+<<<<<<< HEAD
 
 else:
     st.error("Model could not be loaded. Please ensure the trained model file is in the models/ directory.")
+=======
+>>>>>>> 0bcee78 (Make app run locally on Windows: remove rasterio, add tifffile fallback; pin numpy for Py3.13; fix stray else in dashboard)
+
