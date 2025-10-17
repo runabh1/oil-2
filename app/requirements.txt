@@ -1,0 +1,9 @@
+streamlit
+tensorflow-cpu==2.16.1
+numpy>=1.26.0,<2.0.0
+matplotlib
+pandas
+opencv-python
+scikit-learn
+scikit-image
+rasterio
