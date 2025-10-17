@@ -5,15 +5,29 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import tensorflow as tf
+
+# Handle TensorFlow import with error handling
+try:
+    import tensorflow as tf
+    TF_AVAILABLE = True
+except ImportError as e:
+    st.error(f"TensorFlow import failed: {e}")
+    st.info("Please check the installation requirements or try restarting the app.")
+    TF_AVAILABLE = False
 
 # Must import the model structure and prediction logic
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from src.model_definition import build_unet
-from src.prediction_service import preprocess_and_predict, colorize_mask 
+try:
+    from src.model_definition import build_unet
+    from src.prediction_service import preprocess_and_predict, colorize_mask
+    MODULES_AVAILABLE = True
+except ImportError as e:
+    st.error(f"Module import failed: {e}")
+    st.info("Please ensure all source files are present.")
+    MODULES_AVAILABLE = False 
 
 # Configuration
 st.set_page_config(layout="wide", page_title="InterpAI Portfolio")
@@ -29,6 +43,9 @@ CLASSES = 10
 @st.cache_resource
 def load_the_model():
     """Load the trained Keras model and weights."""
+    if not TF_AVAILABLE or not MODULES_AVAILABLE:
+        return None
+        
     try:
         # Build structure
         model = build_unet(input_shape=(IMG_SIZE, IMG_SIZE, 1), num_classes=CLASSES)
@@ -47,7 +64,19 @@ def load_the_model():
 
 model = load_the_model()
 
-if model:
+if not TF_AVAILABLE:
+    st.title("🌊 AI-Driven Seismic Interpretation (InterpAI)")
+    st.error("❌ TensorFlow is not available. Please check the installation requirements.")
+    st.stop()
+elif not MODULES_AVAILABLE:
+    st.title("🌊 AI-Driven Seismic Interpretation (InterpAI)")
+    st.error("❌ Required modules are not available. Please check the source files.")
+    st.stop()
+elif model is None:
+    st.title("🌊 AI-Driven Seismic Interpretation (InterpAI)")
+    st.error("❌ Model could not be loaded. Please ensure the trained model file is in the models/ directory.")
+    st.stop()
+else:
     st.title("🌊 AI-Driven Seismic Interpretation (InterpAI)")
     st.markdown("### Automated Fault and Horizon Segmentation for E&P")
 
